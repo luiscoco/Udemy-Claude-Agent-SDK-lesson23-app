@@ -250,6 +250,7 @@ if (e.type === "answer") renderMarkdown($("answer"), e.text);
 - Tool search and process boundaries: This small server uses alwaysLoad for its schemas. Deferred tool search is not demonstrated. In-process describes the custom server, not the Claude Code child runtime or remote model service.
 - Other result types: Audio, resource links and binary resources are reference topics here. Only text, PNG images, inline text resources and structured JSON are executed. Python differs for structuredContent and binary resources; this application teaches TypeScript.
 - Rebuild the sample chart: The PNG is bundled, so Python is not needed to run the app. To regenerate it, install matplotlib in your Python environment and run python scripts/create-chart.py. Keep the classroom-data label.
+- Reading the UML: The diagram groups setup and alternative classroom experiments. Its weather, error, image and resource paths are not all executed by one query. Use the selected mode and actual trace to follow the relevant path.
 
 ## References
 
