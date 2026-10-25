@@ -1,0 +1,273 @@
+{
+  "lanes": [
+    "Student UI",
+    "Node host",
+    "SDK + Claude",
+    "MCP handler",
+    "HTTP + assets"
+  ],
+  "arrows": [
+    [
+      0,
+      1,
+      "1. Validate the experiment"
+    ],
+    [
+      1,
+      3,
+      "2. Annotate tool behavior"
+    ],
+    [
+      1,
+      2,
+      "3. Register the advanced server"
+    ],
+    [
+      1,
+      2,
+      "4. Configure tool access"
+    ],
+    [
+      1,
+      2,
+      "5. Start the actual query"
+    ],
+    [
+      2,
+      3,
+      "6. Measure handler intervals"
+    ],
+    [
+      3,
+      2,
+      "7. Return a friendly tool failure"
+    ],
+    [
+      3,
+      2,
+      "8. Observe exception conversion"
+    ],
+    [
+      3,
+      2,
+      "9. Encode an actual PNG"
+    ],
+    [
+      3,
+      2,
+      "10. Embed a report by URI"
+    ],
+    [
+      3,
+      2,
+      "11. Return exact structured fields"
+    ],
+    [
+      2,
+      1,
+      "12. Inspect native tool-result blocks"
+    ],
+    [
+      1,
+      0,
+      "13. Render text beside evidence"
+    ]
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "title": "Validate the experiment",
+      "source": "src/agent.ts",
+      "code": "return { mode: (value as RunConfig).mode };\n}\nexport function projectToolResult(value: unknown): ToolProjection | null {",
+      "language": "typescript",
+      "explanation": "Accept only the seven classroom tasks. Browser input does not supply executable handlers or arbitrary service URLs.",
+      "firstLine": 59,
+      "lastLine": 61,
+      "anchors": [
+        "return { mode: (value as RunConfig).mode };"
+      ],
+      "sourceSHA256": "bc968e4d39d6983edb3f4d97e30172e2e3b745257fae5b8771b22cbd637ac29c",
+      "narration": "Step 1. Accept only the seven classroom tasks. Browser input does not supply executable handlers or arbitrary service URLs. This source excerpt shows the corresponding application statement."
+    },
+    {
+      "number": 2,
+      "title": "Annotate tool behavior",
+      "source": "src/tools.ts",
+      "code": "export const READ_ONLY = {\n  readOnlyHint: true,\n  destructiveHint: false,\n  idempotentHint: true,\n  openWorldHint: true,\n};",
+      "language": "typescript",
+      "explanation": "These hints describe read-only behavior. They do not enforce it. The app measures overlap instead of assuming a schedule from the annotation.",
+      "firstLine": 17,
+      "lastLine": 22,
+      "anchors": [
+        "export const READ_ONLY = {"
+      ],
+      "sourceSHA256": "7ae302be0ef01ad4d11beef6dac64fda50fb3a7b16180608bd97e7177b2d6c85",
+      "narration": "Step 2. These hints describe read-only behavior. They do not enforce it. The app measures overlap instead of assuming a schedule from the annotation. This source excerpt shows the corresponding application statement."
+    },
+    {
+      "number": 3,
+      "title": "Register the advanced server",
+      "source": "src/tools.ts",
+      "code": "return createSdkMcpServer({\n    name: \"advanced\",\n    version: \"1.0.0\",\n    tools: selected,\n    alwaysLoad: true,\n  });",
+      "language": "typescript",
+      "explanation": "Wrap the selected tool definitions in an in-process MCP server. The server runs in this Node host while the model remains remote.",
+      "firstLine": 307,
+      "lastLine": 312,
+      "anchors": [
+        "return createSdkMcpServer({"
+      ],
+      "sourceSHA256": "7ae302be0ef01ad4d11beef6dac64fda50fb3a7b16180608bd97e7177b2d6c85",
+      "narration": "Step 3. Wrap the selected tool definitions in an in-process MCP server. The server runs in this Node host while the model remains remote. This source excerpt shows the corresponding application statement."
+    },
+    {
+      "number": 4,
+      "title": "Configure tool access",
+      "source": "src/agent.ts",
+      "code": "tools: [],\n    mcpServers,\n    allowedTools: [\"mcp__advanced__*\"],\n    settingSources: [],",
+      "language": "typescript",
+      "explanation": "Remove built-ins and register only the selected custom tools. The full advanced namespace is pre-approved for this classroom experiment.",
+      "firstLine": 125,
+      "lastLine": 128,
+      "anchors": [
+        "tools: [],"
+      ],
+      "sourceSHA256": "bc968e4d39d6983edb3f4d97e30172e2e3b745257fae5b8771b22cbd637ac29c",
+      "narration": "Step 4. Remove built-ins and register only the selected custom tools. The full advanced namespace is pre-approved for this classroom experiment. This source excerpt shows the corresponding application statement."
+    },
+    {
+      "number": 5,
+      "title": "Start the actual query",
+      "source": "src/agent.ts",
+      "code": "const run = query({ prompt: input(), options });\n  let text = \"\",\n    status = \"no_result\",",
+      "language": "typescript",
+      "explanation": "Streaming input keeps the in-process MCP exchange open. The SDK manages the model and tool loop; the host reads actual messages.",
+      "firstLine": 189,
+      "lastLine": 191,
+      "anchors": [
+        "const run = query({ prompt: input(), options });"
+      ],
+      "sourceSHA256": "bc968e4d39d6983edb3f4d97e30172e2e3b745257fae5b8771b22cbd637ac29c",
+      "narration": "Step 5. Streaming input keeps the in-process MCP exchange open. The SDK manages the model and tool loop; the host reads actual messages. This source excerpt shows the corresponding application statement."
+    },
+    {
+      "number": 6,
+      "title": "Measure handler intervals",
+      "source": "src/tools.ts",
+      "code": "const startMs = now();\n      const coords =\n        args.city === \"Madrid\" ? [40.4168, -3.7038] : [37.7749, -122.4194];\n      const url = new URL(\"https://api.open-meteo.com/v1/forecast\");",
+      "language": "typescript",
+      "explanation": "Record start and end times on a monotonic clock. Weather includes a labelled seven-hundred-millisecond teaching delay. Only intersecting observed intervals count as overlap.",
+      "firstLine": 64,
+      "lastLine": 67,
+      "anchors": [
+        "const startMs = now();"
+      ],
+      "sourceSHA256": "7ae302be0ef01ad4d11beef6dac64fda50fb3a7b16180608bd97e7177b2d6c85",
+      "narration": "Step 6. Record start and end times on a monotonic clock. Weather includes a labelled seven-hundred-millisecond teaching delay. Only intersecting observed intervals count as overlap. This source excerpt shows the corresponding application statement."
+    },
+    {
+      "number": 7,
+      "title": "Return a friendly tool failure",
+      "source": "src/tools.ts",
+      "code": "const result = friendlyFailure(response.status);\n        record({\n          name: \"fetch_data\",\n          args,",
+      "language": "typescript",
+      "explanation": "An intentional local HTTP 503 becomes a composed isError result. It is not a successful data response, and the model is asked not to retry.",
+      "firstLine": 141,
+      "lastLine": 144,
+      "anchors": [
+        "const result = friendlyFailure(response.status);"
+      ],
+      "sourceSHA256": "7ae302be0ef01ad4d11beef6dac64fda50fb3a7b16180608bd97e7177b2d6c85",
+      "narration": "Step 7. An intentional local HTTP 503 becomes a composed isError result. It is not a successful data response, and the model is asked not to retry. This source excerpt shows the corresponding application statement."
+    },
+    {
+      "number": 8,
+      "title": "Observe exception conversion",
+      "source": "src/tools.ts",
+      "code": "throw new Error(\"Classroom upstream unavailable (intentional)\");",
+      "language": "typescript",
+      "explanation": "This controlled uncaught handler exception is converted by the SDK MCP server to an error tool result. Other kinds of SDK or transport failures can still end a query.",
+      "firstLine": 188,
+      "lastLine": 188,
+      "anchors": [
+        "throw new Error(\"Classroom upstream unavailable (intentional)\");"
+      ],
+      "sourceSHA256": "7ae302be0ef01ad4d11beef6dac64fda50fb3a7b16180608bd97e7177b2d6c85",
+      "narration": "Step 8. This controlled uncaught handler exception is converted by the SDK MCP server to an error tool result. Other kinds of SDK or transport failures can still end a query. This source excerpt shows the corresponding application statement."
+    },
+    {
+      "number": 9,
+      "title": "Encode an actual PNG",
+      "source": "src/tools.ts",
+      "code": "const image = {\n        type: \"image\" as const,\n        data: buffer.toString(\"base64\"),\n        mimeType: \"image/png\",\n      };",
+      "language": "typescript",
+      "explanation": "The handler fetches the bundled sample PNG and returns raw base64 with image/png. The source image is labelled classroom data, not live weather.",
+      "firstLine": 226,
+      "lastLine": 230,
+      "anchors": [
+        "const image = {"
+      ],
+      "sourceSHA256": "7ae302be0ef01ad4d11beef6dac64fda50fb3a7b16180608bd97e7177b2d6c85",
+      "narration": "Step 9. The handler fetches the bundled sample PNG and returns raw base64 with image/png. The source image is labelled classroom data, not live weather. This source excerpt shows the corresponding application statement."
+    },
+    {
+      "number": 10,
+      "title": "Embed a report by URI",
+      "source": "src/tools.ts",
+      "code": "export function resourceBlock() {\n  return {\n    type: \"resource\" as const,\n    resource: {\n      uri: \"classroom://lesson23/report\",\n      mimeType: \"text/markdown\",\n      text: REPORT,\n    },",
+      "language": "typescript",
+      "explanation": "The resource carries its Markdown text inline. The classroom URI is a label; no filesystem read from that URI is implied.",
+      "firstLine": 33,
+      "lastLine": 40,
+      "anchors": [
+        "export function resourceBlock() {"
+      ],
+      "sourceSHA256": "7ae302be0ef01ad4d11beef6dac64fda50fb3a7b16180608bd97e7177b2d6c85",
+      "narration": "Step 10. The resource carries its Markdown text inline. The classroom URI is a label; no filesystem read from that URI is implied. This source excerpt shows the corresponding application statement."
+    },
+    {
+      "number": 11,
+      "title": "Return exact structured fields",
+      "source": "src/tools.ts",
+      "code": "return { content, structuredContent: SAMPLE };",
+      "language": "typescript",
+      "explanation": "Structured JSON is forwarded with the image and inline resource. The redundant text sentinel is not forwarded in the observed SDK tool result.",
+      "firstLine": 258,
+      "lastLine": 258,
+      "anchors": [
+        "return { content, structuredContent: SAMPLE };"
+      ],
+      "sourceSHA256": "7ae302be0ef01ad4d11beef6dac64fda50fb3a7b16180608bd97e7177b2d6c85",
+      "narration": "Step 11. Structured JSON is forwarded with the image and inline resource. The redundant text sentinel is not forwarded in the observed SDK tool result. This source excerpt shows the corresponding application statement."
+    },
+    {
+      "number": 12,
+      "title": "Inspect native tool-result blocks",
+      "source": "src/agent.ts",
+      "code": "if (message.type === \"user\" && Array.isArray(message.message.content)) {\n        for (const block of message.message.content) {\n          const projection = projectToolResult(block);\n          if (projection) {\n            nativeResults.push(projection);\n            emit({ type: \"native-result\", projection });",
+      "language": "typescript",
+      "explanation": "Project actual native tool results, preserving error flags and block metadata. Do not dump base64 into the interface or infer forwarding from the model answer alone.",
+      "firstLine": 221,
+      "lastLine": 226,
+      "anchors": [
+        "if (message.type === \"user\" && Array.isArray(message.message.content)) {"
+      ],
+      "sourceSHA256": "bc968e4d39d6983edb3f4d97e30172e2e3b745257fae5b8771b22cbd637ac29c",
+      "narration": "Step 12. Project actual native tool results, preserving error flags and block metadata. Do not dump base64 into the interface or infer forwarding from the model answer alone. This source excerpt shows the corresponding application statement."
+    },
+    {
+      "number": 13,
+      "title": "Render text beside evidence",
+      "source": "src/client.ts",
+      "code": "if (e.type === \"answer\") renderMarkdown($(\"answer\"), e.text);\n  if (e.type === \"result\") {\n    $(\"status\").textContent = e.status;",
+      "language": "typescript",
+      "explanation": "Sanitize and format model Markdown. Keep model text separate from handler timings, original block types and actual SDK-forwarded results.",
+      "firstLine": 31,
+      "lastLine": 33,
+      "anchors": [
+        "if (e.type === \"answer\") renderMarkdown($(\"answer\"), e.text);"
+      ],
+      "sourceSHA256": "b96a301bd8008fd6c9dec432a5d29c256150ae326ae26b608330bcdcce72dbab",
+      "narration": "Step 13. Sanitize and format model Markdown. Keep model text separate from handler timings, original block types and actual SDK-forwarded results. This source excerpt shows the corresponding application statement."
+    }
+  ]
+}
